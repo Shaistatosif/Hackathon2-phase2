@@ -1,0 +1,99 @@
+# Default values for todo-app
+# This is a YAML-formatted file.
+
+# Global settings
+global:
+  namespace: todo-app
+  environment: production
+
+# Backend configuration
+backend:
+  name: todo-backend
+  replicaCount: 2
+  image:
+    repository: todo-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8000
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  env:
+    ENVIRONMENT: "production"
+    OPENAI_MODEL: "gpt-4o-mini"
+    KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+  dapr:
+    enabled: true
+    appId: "todo-backend"
+    appPort: 8000
+
+# Frontend configuration
+frontend:
+  name: todo-frontend
+  replicaCount: 2
+  image:
+    repository: todo-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "250m"
+  env:
+    NODE_ENV: "production"
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+  hosts:
+    - host: todo.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: frontend
+    - host: api.todo.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: backend
+  tls:
+    enabled: false
+    secretName: todo-tls
+
+# Secrets (use external secrets manager in production)
+secrets:
+  databaseUrl: "postgresql+asyncpg://todouser:todopass@postgres:5432/todoapp"
+  jwtSecret: "change-this-in-production"
+  openaiApiKey: ""
+
+# Kafka configuration
+kafka:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    size: 5Gi
+
+# PostgreSQL configuration (for local dev, use external in production)
+postgresql:
+  enabled: false
+  external:
+    host: ""
+    port: 5432
+    database: todoapp

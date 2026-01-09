@@ -1,0 +1,51 @@
+# Git
+.git/
+.gitignore
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+.coverage
+.pytest_cache/
+htmlcov/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Docker files (prevent recursive copy)
+Dockerfile*
+docker-compose*.yml
+
+# Kubernetes
+infrastructure/k8s/
+infrastructure/helm/
+*.secret.yaml

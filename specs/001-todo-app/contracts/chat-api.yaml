@@ -1,0 +1,303 @@
+openapi: 3.0.3
+info:
+  title: Todo App - Chat API
+  description: AI Chatbot endpoints for natural language task management with Hinglish support
+  version: 1.0.0
+
+servers:
+  - url: /api/chat
+    description: Chat API base path
+
+paths:
+  /message:
+    post:
+      summary: Send a message to the AI chatbot
+      operationId: sendMessage
+      tags:
+        - Chat
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessageRequest'
+      responses:
+        '200':
+          description: Chatbot response with optional task action
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessageResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /history:
+    get:
+      summary: Get conversation history
+      operationId: getConversationHistory
+      tags:
+        - Chat
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: conversationId
+          in: query
+          schema:
+            type: string
+            format: uuid
+          description: Specific conversation ID (optional, returns current/latest if not provided)
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+          description: Number of messages to return
+      responses:
+        '200':
+          description: Conversation history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationHistoryResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      summary: Clear conversation history
+      operationId: clearConversationHistory
+      tags:
+        - Chat
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: conversationId
+          in: query
+          schema:
+            type: string
+            format: uuid
+          description: Specific conversation ID (optional, clears current if not provided)
+      responses:
+        '200':
+          description: Conversation cleared
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /conversations:
+    get:
+      summary: List all conversations for the user
+      operationId: listConversations
+      tags:
+        - Chat
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+      responses:
+        '200':
+          description: List of conversations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationListResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ChatMessageRequest:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          minLength: 1
+          maxLength: 2000
+          example: Add task: Complete project report
+          description: User message in English or Hinglish
+        conversationId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Existing conversation ID to continue, or null to start new
+
+    ChatMessageResponse:
+      type: object
+      properties:
+        userMessage:
+          $ref: '#/components/schemas/Message'
+        assistantMessage:
+          $ref: '#/components/schemas/Message'
+        conversationId:
+          type: string
+          format: uuid
+          description: Conversation ID for follow-up messages
+        taskAction:
+          $ref: '#/components/schemas/TaskAction'
+
+    TaskAction:
+      type: object
+      nullable: true
+      description: Task operation performed by the chatbot (if any)
+      properties:
+        action:
+          type: string
+          enum: [created, updated, completed, deleted, listed]
+          description: Type of task action performed
+        task:
+          $ref: '#/components/schemas/TaskSummary'
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskSummary'
+          description: For 'listed' action, contains matching tasks
+
+    TaskSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        status:
+          type: string
+          enum: [pending, in_progress, completed]
+        priority:
+          type: string
+          enum: [low, medium, high]
+        dueDate:
+          type: string
+          format: date-time
+          nullable: true
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        senderType:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        messageCount:
+          type: integer
+          description: Number of messages in conversation
+        preview:
+          type: string
+          description: First user message as preview
+
+    ConversationHistoryResponse:
+      type: object
+      properties:
+        conversation:
+          $ref: '#/components/schemas/Conversation'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+
+    ConversationListResponse:
+      type: object
+      properties:
+        conversations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Conversation'
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+            limit:
+              type: integer
+            total:
+              type: integer
+            totalPages:
+              type: integer
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Conversation cleared successfully
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Invalid message format
+        code:
+          type: string
+          example: CHAT_INVALID_MESSAGE
+        details:
+          type: object
+          additionalProperties: true
