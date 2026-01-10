@@ -60,7 +60,7 @@ class ApiClient {
         errorMessage = error.detail;
       } else if (Array.isArray(error.detail)) {
         // Validation errors come as array
-        errorMessage = error.detail.map((e: any) => e.msg || e.message || JSON.stringify(e)).join(', ');
+        errorMessage = error.detail.map((e: { msg?: string; message?: string }) => e.msg || e.message || JSON.stringify(e)).join(', ');
       } else if (typeof error.detail === 'object') {
         errorMessage = JSON.stringify(error.detail);
       }

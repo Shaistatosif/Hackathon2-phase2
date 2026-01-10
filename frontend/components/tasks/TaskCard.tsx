@@ -30,7 +30,7 @@ const statusLabels = {
 
 export function TaskCard({
   task,
-  onStatusChange,
+  onStatusChange: _onStatusChange,
   onComplete,
   onEdit,
   onDelete,
