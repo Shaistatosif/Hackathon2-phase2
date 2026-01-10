@@ -134,8 +134,15 @@ export interface TaskFilterParams {
 }
 
 // Error types
+export interface ValidationError {
+  msg?: string;
+  message?: string;
+  loc?: string[];
+  type?: string;
+}
+
 export interface ApiError {
-  detail: string;
+  detail: string | ValidationError[] | Record<string, unknown>;
   errorCode?: string;
 }
 

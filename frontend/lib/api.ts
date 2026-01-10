@@ -15,6 +15,7 @@ import type {
   User,
   UserLoginRequest,
   UserRegisterRequest,
+  ValidationError,
 } from '@/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -60,7 +61,7 @@ class ApiClient {
         errorMessage = error.detail;
       } else if (Array.isArray(error.detail)) {
         // Validation errors come as array
-        errorMessage = error.detail.map((e: { msg?: string; message?: string }) => e.msg || e.message || JSON.stringify(e)).join(', ');
+        errorMessage = (error.detail as ValidationError[]).map((e) => e.msg || e.message || JSON.stringify(e)).join(', ');
       } else if (typeof error.detail === 'object') {
         errorMessage = JSON.stringify(error.detail);
       }
