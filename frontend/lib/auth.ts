@@ -8,6 +8,8 @@ import { api } from './api';
 
 interface AuthStore extends AuthState {
   tokens: TokenResponse | null;
+  _hasHydrated: boolean;
+  setHasHydrated: (state: boolean) => void;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
@@ -22,6 +24,8 @@ export const useAuthStore = create<AuthStore>()(
       tokens: null,
       isAuthenticated: false,
       isLoading: false,
+      _hasHydrated: false,
+      setHasHydrated: (state: boolean) => set({ _hasHydrated: state }),
 
       login: async (email: string, password: string) => {
         set({ isLoading: true });
@@ -106,6 +110,8 @@ export const useAuthStore = create<AuthStore>()(
         if (state?.tokens?.accessToken) {
           api.setAccessToken(state.tokens.accessToken);
         }
+        // Mark hydration as complete
+        state?.setHasHydrated(true);
       },
     }
   )

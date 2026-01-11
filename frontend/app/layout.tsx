@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { AuthProvider } from '@/components/providers/AuthProvider';
 
 export const metadata: Metadata = {
   title: 'Todo App - AI Powered Task Management',
@@ -17,9 +18,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="min-h-screen bg-[#1C1C1C] text-[#FAFAFA] antialiased">
-        <div className="flex min-h-screen flex-col">
-          {children}
-        </div>
+        <AuthProvider>
+          <div className="flex min-h-screen flex-col">
+            {children}
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );
