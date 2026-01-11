@@ -92,7 +92,7 @@ function WelcomeMessage({ onSuggestionClick }: WelcomeMessageProps) {
         <span className="text-2xl">🤖</span>
       </div>
       <h3 className="text-xl font-semibold text-white mb-2">
-        Hey there! I&apos;m your AI Task Assistant
+        Hey there! I&apos;m Shaista&apos;s AI Task Assistant
       </h3>
       <p className="text-gray-400 mb-6 max-w-md">
         I can help you manage tasks in English or Hinglish. Try these:

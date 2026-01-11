@@ -9,8 +9,8 @@ export default function LandingPage() {
       <header className="border-b border-[#3A3A3A] bg-[#2A2A2A]">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
           <div className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-[#FFA500]">Todo</span>
-            <span className="text-2xl font-bold">App</span>
+            <span className="text-2xl font-bold text-[#FFA500]">Shaista</span>
+            <span className="text-2xl font-bold">Todo</span>
           </div>
           <nav className="flex items-center space-x-4">
             <Link
@@ -93,7 +93,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-[#3A3A3A] bg-[#2A2A2A] py-8">
         <div className="mx-auto max-w-7xl px-4 text-center text-sm text-[#A1A1A1]">
-          <p>&copy; 2026 Todo App. AI-Powered Task Management.</p>
+          <p>&copy; 2026 Shaista Todo. Created by Shaista Tosif.</p>
         </div>
       </footer>
     </div>

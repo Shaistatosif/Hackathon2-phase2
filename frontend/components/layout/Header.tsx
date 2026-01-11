@@ -21,8 +21,8 @@ export function Header({ user, onLogout }: HeaderProps) {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         {/* Logo */}
         <Link href={user ? '/dashboard' : '/'} className="flex items-center space-x-2">
-          <span className="text-2xl font-bold text-[#FFA500]">Todo</span>
-          <span className="text-2xl font-bold">App</span>
+          <span className="text-2xl font-bold text-[#FFA500]">Shaista</span>
+          <span className="text-2xl font-bold">Todo</span>
         </Link>
 
         {/* Navigation */}
