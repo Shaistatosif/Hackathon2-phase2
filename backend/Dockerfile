@@ -5,7 +5,7 @@ WORKDIR /app
 # Environment variables (secrets set via deployment platform)
 ENV JWT_ALGORITHM=HS256
 ENV OPENAI_MODEL=gpt-4o-mini
-ENV CORS_ORIGINS_STR=https://hackathon2-phase2.vercel.app
+ENV CORS_ORIGINS_STR=http://localhost:3000,https://hackathon2-phase2-fvk9.vercel.app,https://hackathon2-phase2-fvk9-git-main-shaista-tosifs-projects.vercel.app
 ENV ENVIRONMENT=production
 
 # Install dependencies
