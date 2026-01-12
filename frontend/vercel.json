@@ -1,4 +1,7 @@
 {
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
   "env": {
     "NEXT_PUBLIC_API_URL": "https://shaista-tosif-todo-app-backend.hf.space"
   }
